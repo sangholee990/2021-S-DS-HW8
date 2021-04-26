@@ -223,14 +223,47 @@ int deleteLast(listNode* h) {
 
 
 int insertFirst(listNode* h, int key) {
-
+    
+    listNode* node = (listNode*)malloc(sizeof(listNode)); // 새로 삽입하는 노드 동적 할당 
+    listNode* now = h ->rlink; // 움직일 포인터를 첫번째 노드로 초기화
+	
+	node->key = key; // 새로운 노드에 키값 넣기
+	node->llink = h;
+	node->rlink = h;
+	
+	if(p=h) //리스트가 비어있다면 
+	{
+		h->llink = node; // 노드의 시작을 새로 삽입한 노드로
+		h->rlink = node;	 
+	 } 
+	
+	else //노드가 하나 이상 있다면 
+	{
+		h->rlink = node;
+		node->rlink =now;
+		now->llink = node; 
+	 } 
 
 	return 1;
 }
 
-
+/**
+ * list의 첫번째 노드 삭제
+ */
 int deleteFirst(listNode* h) {
-
+    
+    listNode* now = h->rlink; // 움직이는 포인터를 첫 번째 노드로
+	
+	if(h==NULL) // 리스트에 노드가 없다면
+	{
+		printf("더 이상 삭제할 노드가 없다면\n");
+		return 0;
+	 } 
+	 
+	else //리스트에 노드가 하나이상 있다면
+	{
+		now = h->rlink; //
+	 } 
 
 	return 1;
 
