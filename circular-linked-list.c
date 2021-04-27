@@ -240,25 +240,22 @@ int deleteLast(listNode* h) {
 
 int insertFirst(listNode* h, int key) {
     
-    listNode* node = (listNode*)malloc(sizeof(listNode)); // 새로 삽입하는 노드 동적 할당 
-    listNode* now = h ->rlink; // 움직일 포인터를 첫번째 노드로 초기화
-	
-	node->key = key; // 새로운 노드에 키값 넣기
-	node->llink = h;
-	node->rlink = h;
-	
-	if(now=h) //리스트가 비어있다면 
-	{
-		h->llink = node; // 노드의 시작을 새로 삽입한 노드로
-		h->rlink = node;	 
-	 } 
-	
-	else //노드가 하나 이상 있다면 
-	{
+    listNode *node = (listNode *)malloc(sizeof(listNode));	// 새로운 노드 동적 할당 
+	node->key = key;
+
+	if (h->rlink == h) {		// 리스트가 비어있다면 (헤드노드만 존재) 
 		h->rlink = node;
-		node->rlink =now;
-		now->llink = node; 
-	 } 
+		node->llink = h;
+		node->rlink = h;			// 삽입노드의 오른쪽링크를 헤드노드와 연결 
+		h->llink = node;			// 헤드노드의 왼쪽을 삽입노드와 연결 
+	}
+	
+	else {		//리스트에 하나이상의 노드가 존재 
+		node->llink = h;
+		node->rlink = h->rlink;	
+		h->rlink->llink = node;
+		h->rlink = node;
+	}
 
 	return 1;
 }
