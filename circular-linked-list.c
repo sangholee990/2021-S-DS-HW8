@@ -14,34 +14,34 @@
 #include<stdlib.h>
 
 
-typedef struct Node {
-	int key;
-	struct Node* llink;
-	struct Node* rlink;
+typedef struct Node { // 원형 연결 리스트 노드 구성 구조체 선언 
+	int key; // 데이터 필드 
+	struct Node* llink; // 왼쪽링크 필드 
+	struct Node* rlink; // 오른쪽링크 필드 
 } listNode;
 
 
-int initialize(listNode** h);
-int freeList(listNode* h);
-int insertLast(listNode* h, int key);
-int deleteLast(listNode* h);
-int insertFirst(listNode* h, int key);
-int deleteFirst(listNode* h);
-int invertList(listNode* h);
+int initialize(listNode** h); // 리스트 초기화 함수 
+int freeList(listNode* h); // 모든 노드의 동적 할당 된 메모리를 해제하는 함수 
+int insertLast(listNode* h, int key); // 마지막에 노드를 추가하는 함수 
+int deleteLast(listNode* h); // 마지막 노드를 삭제하는 함수 
+int insertFirst(listNode* h, int key); // 첫번째 노드를 추가하는 함수 
+int deleteFirst(listNode* h); // 첫번째 노드를 삭제하는 함수 
+int invertList(listNode* h); // 리스트에 있는 노드를 역순으로 반전시키는 함수 
+  
+int insertNode(listNode* h, int key); // 키값을 갖는 노드를 오름차순에 맞게 삽입하는 함수 
+int deleteNode(listNode* h, int key); // 키값을 받아 키값과 같은 노드를 삭제하는 함수 
 
-int insertNode(listNode* h, int key);
-int deleteNode(listNode* h, int key);
-
-void printList(listNode* h);
+void printList(listNode* h); // 리스트의 상태를 출력하는 함수 
 
 
 
 int main()
 {
-	char command;
-	int key;
-	listNode* headnode=NULL;
-        
+	char command; // 사용자 메뉴 입력  변수 
+	int key; // 사용자가 입력하는 키값 저장 변수 
+	listNode* headnode=NULL; //헤드노드 선언후 초기화 
+         
         
         printf("[------ [이상호] [2018038016] ------]\n");
 	do{
@@ -56,46 +56,46 @@ int main()
 		printf("----------------------------------------------------------------\n");
 
 		printf("Command = ");
-		scanf(" %c", &command);
+		scanf(" %c", &command); //사용자에게 커맨드 입력받기 
 
 		switch(command) {
 		case 'z': case 'Z':
-			initialize(&headnode);
+			initialize(&headnode); //함수 초기화 
 			break;
 		case 'p': case 'P':
-			printList(headnode);
+			printList(headnode); // 리스트에 있는 노드의 정보들을 출력 
 			break;
 		case 'i': case 'I':
 			printf("Your Key = ");
 			scanf("%d", &key);
-			insertNode(headnode, key);
+			insertNode(headnode, key); //노드를 오름차순에 맞게 삽입 
 			break;
 		case 'd': case 'D':
 			printf("Your Key = ");
 			scanf("%d", &key);
-			deleteNode(headnode, key);
+			deleteNode(headnode, key); //키값을 입력받은후 키값과 일치하는 노드 삭제 
 			break;
 		case 'n': case 'N':
 			printf("Your Key = ");
 			scanf("%d", &key);
-			insertLast(headnode, key);
+			insertLast(headnode, key); //마지막에 노드 삽입 
 			break;
 		case 'e': case 'E':
-			deleteLast(headnode);
+			deleteLast(headnode); //마지막노드 삭제 
 			break;
 		case 'f': case 'F':
 			printf("Your Key = ");
 			scanf("%d", &key);
-			insertFirst(headnode, key);
+			insertFirst(headnode, key); //제일 첫번째에 노드 삽입 
 			break;
 		case 't': case 'T':
-			deleteFirst(headnode);
+			deleteFirst(headnode); //첫번째 노드 삭제 
 			break;
 		case 'r': case 'R':
-			invertList(headnode);
+			invertList(headnode); //리스트에 있는 노드를 역순으로 반전 
 			break;
 		case 'q': case 'Q':
-			freeList(headnode);
+			freeList(headnode); // 리스트에 있는 노드 동적할당 해제  
 			break;
 		default:
 			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
@@ -107,13 +107,14 @@ int main()
 	return 1;
 }
 
-
+/* headNode가 NULL이 아니면, freeNode를 호출하여 할당된 메모리 모두 해제 */
 int initialize(listNode** h) {
 
 
 	if(*h != NULL)
 		freeList(*h);
-
+     
+    /* headNode에 대한 메모리를 할당하여 리턴 */ 
 	*h = (listNode*)malloc(sizeof(listNode));
 	(*h)->rlink = *h;
 	(*h)->llink = *h;
@@ -148,23 +149,23 @@ int freeList(listNode* h){
 
 
 
-void printList(listNode* h) {
+void printList(listNode* h) { //노드에 대한 정보들을 출력 
 	int i = 0; 
 	listNode* p;
 
 	printf("\n---PRINT\n");
 
-	if(h == NULL) { 
+	if(h == NULL) { //노드가 초기화 되지 않았다면 
 		printf("Nothing to print....\n");
 		return;
 	}
 
-	p = h->rlink;
+	p = h->rlink; //p가 첫번째 노드를 가리키게 
 
-	while(p != NULL && p != h) {
+	while(p != NULL && p != h) { // 노드 마지막 까지 반복 
 		printf("[ [%d]=%d ] ", i, p->key);
-		p = p->rlink;
-		i++;
+		p = p->rlink; //다음 노드로 이동 
+		i++; // 카운트 
 	}
 	printf("  items = %d\n", i);
 
@@ -172,13 +173,14 @@ void printList(listNode* h) {
 	printf("\n---checking addresses of links\n");
 	printf("-------------------------------\n");
 	printf("head node: [llink]=%p, [head]=%p, [rlink]=%p\n", h->llink, h, h->rlink);
-
+    // 노드 주소값에 대해 출력 
+    
 	i = 0;
-	p = h->rlink;
+	p = h->rlink; //p가 가장 첫번째 노드를 가리키게 한다 
 	while(p != NULL && p != h) {
 		printf("[ [%d]=%d ] [llink]=%p, [node]=%p, [rlink]=%p\n", i, p->key, p->llink, p, p->rlink);
-		p = p->rlink;
-		i++;
+		p = p->rlink; // 다음 노드를 가리키게 
+		i++; // 카운트 
 	}
 
 }
@@ -303,7 +305,7 @@ int invertList(listNode* h) {
 	
 	else
 	{
-		for (; previous->rlink != h; previous = previous->rlink);	//pre 노드가 마지막 노드를 가리킬때 까지 반복 
+		for (; pre->rlink != h; pre = pre->rlink);	//pre 노드가 마지막 노드를 가리킬때 까지 반복 
 	    for (now = h; pre->llink != h; now = now->llink) {		//현재 노드를 헤드노드 부터 반복  
 		       now->llink = now->rlink;								//now의 왼쪽을 now의 오른쪽을 가리키게 
 		       now->rlink = pre;									//now의 오른쪽을 이전노드를 가리키게 
@@ -359,7 +361,7 @@ int insertNode(listNode* h, int key) {
 		
 		while(now != h)// 노드가 리스트에 2개이상 존재하면 반복
 		{
-			cnt++// 반복문 횟수 증가 연산자
+			cnt++;// 반복문 횟수 증가 연산자
 			
 			if(now->key >= key) // 리드의 키값이 새로만든 노드의 키값보다 크면
 			{
@@ -380,7 +382,7 @@ int insertNode(listNode* h, int key) {
 			 } 
 			 
 			 pre=now; //이전노드를 리드가 가리키는 노드로 
-			 now = now->rlink// 리드가 다음노드를 가리키게 
+			 now = now->rlink;// 리드가 다음노드를 가리키게 
 		 } 
 		 
 		 if(now == h)// h->rlink가 h 일때 즉 새로만든 노드가 제일 뒤에 삽입 되어야 할때
