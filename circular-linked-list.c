@@ -135,7 +135,7 @@ int freeList(listNode* h){
 	 
 	while( p != h){
 		   p = p->rlink; // p가 다음노드를 가리키게
-		   free(p->llink) // 이전노드 해제 
+		   free(p->llink); // 이전노드 해제 
 	}
 	
 	free(h); //head노드 해제
@@ -211,12 +211,24 @@ int insertLast(listNode* h, int key) {
 
 int deleteLast(listNode* h) {
     
-    listNode* now=h; //접근할 노드 
+    listNode* node=h; //접근할 노드 
 	
-	if(h ==NULL){
-		  printf("노드가 없습니다\n");
+	if(h ==NULL){ //노드가 비었으면  
+		  printf("리스트가 초기화 되지 않았습니다\n"); // 오류 메세지 
+		  return 0; 
 	} 
     
+    else if (h->rlink == h){ //리스트에 헤드노드만 존재하면 
+    	   printf("노드가 없습니다\n"); // 오류 메세지 
+    	   return 0;
+	}
+	
+	// 노드가 하나이상 있을때
+	for(;node->rlink != h;node = node->rlink); // 접근노드가 마지막 노드를 가리키게
+	node->llink->rlink = h; //삭제 후 마지막 오른쪽을 헤드노드에 연결
+	h->llink= node->llink; //삭제 후 마지막 노드의 왼쪽을 헤드노드에 왼쪽에 연결 
+	free(node);
+	 
 
 	return 1;
 }
@@ -231,7 +243,7 @@ int insertFirst(listNode* h, int key) {
 	node->llink = h;
 	node->rlink = h;
 	
-	if(p=h) //리스트가 비어있다면 
+	if(now=h) //리스트가 비어있다면 
 	{
 		h->llink = node; // 노드의 시작을 새로 삽입한 노드로
 		h->rlink = node;	 
@@ -252,7 +264,7 @@ int insertFirst(listNode* h, int key) {
  */
 int deleteFirst(listNode* h) {
     
-    listNode* now = h->rlink; // 움직이는 포인터를 첫 번째 노드로
+    listNode* now = NULL; // 움직이는 포인터를 첫 번째 노드로
 	
 	if(h==NULL) // 리스트에 노드가 없다면
 	{
@@ -262,15 +274,40 @@ int deleteFirst(listNode* h) {
 	 
 	else //리스트에 노드가 하나이상 있다면
 	{
-		now = h->rlink; //
+		now = h->rlink; // now에 헤드노드 rlink 설정
+		h->rlink = now->rlink; //첫번째 노드를 삭제노드의 다음 노드로 변경
+		if (now->rlink != h) //리스트의 너드가 두개 이상 이면 
+		        now->rlink->llink= now->llink; // 삭제한 노드의 다음 노드의 왼쪽을 삭제한 노드의 왼쪽이랑 연결
+		else // 리스트의 노드가 유일할때 
+		     h->llink=h; 	 // 헤드노드의 왼쪽을 자기자신을 가리키게함
+		
+		free(now); // 삭제 노드 메모리 동적 할당 해제	  
+		
+		return 1;		 
 	 } 
-
-	return 1;
 
 }
 
 
 int invertList(listNode* h) {
+	
+	listNode* pre = h; //이전 노드 가리키는 노드 선언
+	listNode* now =NULL; // 현재 노드 가리키는 노드 선언
+	
+	if (h==NULL){ //초기화된 리스트가 없다면 
+		printf("리스트가 초기화 되지 않았습니다\n");
+		return 0;
+	} 
+	
+	else
+	{
+		for (; previous->rlink != h; previous = previous->rlink);	//pre 노드가 마지막 노드를 가리킬때 까지 반복 
+	    for (now = h; pre->llink != h; now = now->llink) {		//현재 노드를 헤드노드 부터 반복  
+		       now->llink = now->rlink;								//now의 왼쪽을 now의 오른쪽을 가리키게 
+		       now->rlink = pre;									//now의 오른쪽을 이전노드를 가리키게 
+		       pre = now;									    //이전노드를 현재노드로 
+	    }
+	}
 
 
 	return 0;
@@ -280,7 +317,13 @@ int invertList(listNode* h) {
 
 
 int insertNode(listNode* h, int key) {
-
+	
+	listNode* lead = h->rlink; //제일 첫번째 노드를 가리키는 리드노드 생성  
+	listNode* pre = h; //이전 노드의 위치를 기억하는 포인터 변수 선언
+	listNode* node= (listNode*)malloc(sizeof(listNode)); //새로 삽입할 노드 동적할당 
+    
+    
+    
 	return 0;
 }
 
