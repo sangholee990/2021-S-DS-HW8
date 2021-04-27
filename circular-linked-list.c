@@ -41,7 +41,9 @@ int main()
 	char command;
 	int key;
 	listNode* headnode=NULL;
-
+        
+        
+        printf("[------ [이상호] [2018038016] ------]\n");
 	do{
 		printf("----------------------------------------------------------------\n");
 		printf("                  Doubly Circular Linked List                   \n");
@@ -318,11 +320,76 @@ int invertList(listNode* h) {
 
 int insertNode(listNode* h, int key) {
 	
-	listNode* lead = h->rlink; //제일 첫번째 노드를 가리키는 리드노드 생성  
+	listNode* now = h->rlink; //제일 첫번째 노드를 가리키는 리드노드 생성  
 	listNode* pre = h; //이전 노드의 위치를 기억하는 포인터 변수 선언
 	listNode* node= (listNode*)malloc(sizeof(listNode)); //새로 삽입할 노드 동적할당 
+	
+	int cnt=0; //반복문 카운트 변수
+	node->key=key; // 받은 키값 넣기 
+	
+	node->rlink=h; // 새로 삽입할 노드를 헤드노드로 초기화 
+	node->llink=h; 
     
-    
+    if ((h->rlink == h) && (h->llink == h)) //리스트에 헤드노드만 있으면 
+	{
+		h->rlink = node; //새로 생성한 노드를 가장 첫 노드로 삽입
+		h->llink = node;
+	}
+	
+	else //리스트에 1개이상의 노드가 있을 경우의수
+	{
+		if ((now->rlink == h) && (now->llink == h)) //노드가 딱 한개만 있을경우 
+		{
+			if (now->key >= key) // 새로 넣은 키값이 기존 유일한 키값보다 더작을 경우
+			{
+				node->rlink=now; // 유일했던 노드  앞에 새로운 노드를 삽입
+				now->llink=node;
+				h->rlink=node; 
+			 } 
+		   
+		   else //유일한 키값이 새로운 키값보다 작을 경우
+		   {
+		   	    now->rlink=node; // 유일했던 노드 뒤에 새로운 노드 삽입 
+		   	    node->llink=now;
+				h->llink=node; 
+			} 
+			
+			return 0;
+		}
+		
+		while(now != h)// 노드가 리스트에 2개이상 존재하면 반복
+		{
+			cnt++// 반복문 횟수 증가 연산자
+			
+			if(now->key >= key) // 리드의 키값이 새로만든 노드의 키값보다 크면
+			{
+				node->rlink=now; //새로 넣을 노드를 리드 앞에 삽입
+				now->llink=node;
+				
+				if(cnt==1) // 반복문에 처음 들어왔을때 (새로 만든 노드가 맨앞일 경우) 
+				{
+					h->rlink=node; // 헤드노드의 오른쪽링크 즉, 맨처음 노드를 새로만든노드로 초기화
+					return 0; // 함수 탈출 
+				 } 
+				else // cnt != 1 반복문에 두번이상 들어왔을때, (새로만든 노드가 노드 사이에 있을 경우의 수) 
+				{
+					pre->rlink=node; //이전노드의 다음노드로 새로만든 노드를 삽입한다
+					node->llink=pre; // 삽입노드의 왼쪽을 이전노드로
+					return 0; // 함수 탈출 
+				 } 
+			 } 
+			 
+			 pre=now; //이전노드를 리드가 가리키는 노드로 
+			 now = now->rlink// 리드가 다음노드를 가리키게 
+		 } 
+		 
+		 if(now == h)// h->rlink가 h 일때 즉 새로만든 노드가 제일 뒤에 삽입 되어야 할때
+		 {
+		 	pre->rlink=node; //이전노드의 뒤에 삽입 
+		 	node->llink=pre;
+		 	h->llink=node;
+		  } 
+	 } 
     
 	return 0;
 }
@@ -330,6 +397,47 @@ int insertNode(listNode* h, int key) {
 
 
 int deleteNode(listNode* h, int key) {
-
+	
+	listNode* now = NULL; //노드 접근 구조체 포인터
+	
+	if (h->rlink == h) //리스트에 헤드 노드밖에 없으면 
+	{
+           printf("아무 노드도 없습니다.\n"); //에러 메세지  
+           return 0;
+	 } 
+	 
+	now = h->rlink; //헤드노드의 오른쪽 링크를 접근할 노드에 삽입
+	
+	for(;now != h; now= now->rlink) // 마지막 노드까지 반복 
+	{
+		if (now->key == key && now == h->rlink){ //리스트의 첫번째 노드와 삭제할 키값이 같으면 
+			  h->rlink = now->rlink; //첫번째 노드를 삭제노드의 다음으로 변경 
+			  if(now->rlink != h) //리스트에 노드가 두개이상 있으면 
+			        now->rlink->llink = now->llink; //삭제 노드의 다음노드의 왼쪽을 삭제노드왼쪽과 연결
+			  else  // 리스트에 노드가 유일하다면 
+			        h->llink=h;    // 헤드노드의 왼쪽노드가 자신을 가리키게함 
+			  
+			  free(now); //삭제 노드 메모리 해제
+			  
+			  return 0;			 	  
+		} 
+		
+		else if(now->key == key){ // 첫번째를 제외하고 다른 노드와 삭제할 값이 같다면 
+		        
+		       now->llink->rlink = now->rlink; //삭제 노드의 이전노드의 오른쪽을 삭제 노드의 오른쪽과 연결
+			   
+			   if(now->rlink != h) //삭제하는 노드가 리스트의 마지막 노드가 아니면
+			       now->rlink->llink =now->llink; // 삭제노드의 다음의 왼쪽을 삭제 노드의 왼쪽과 연결 
+			   
+			   else
+			       h->llink = now->llink; //헤드노드의 왼쪽을 삭제 노드의 왼쪽 노드와  연결 
+				
+			   free(now); //삭제 노드 메모리 해제
+			   
+			   
+			   return 0;	      
+		}
+		
+	 } 
 	return 0;
 }
